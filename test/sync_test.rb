@@ -175,4 +175,13 @@ class SyncTest < Minitest::Test
     assert_equal [], conn2.exec("SELECT * FROM posts ORDER BY id").to_a
     assert_equal [{"post_id" => 1}], conn2.exec("SELECT post_id FROM comments ORDER BY post_id").to_a
   end
+
+  def test_create_sequences
+    insert(conn1, "posts", [{"id" => 1}])
+    curval = conn1.exec("SELECT nextval('seq_existing');").to_a
+    assert_works "posts --overwrite", config: true
+    created_seq = conn2.exec("SELECT nextval('seq_existing');").to_a
+    assert_equal [{"nextval" => 5}], created_seq
+  end
+  
 end

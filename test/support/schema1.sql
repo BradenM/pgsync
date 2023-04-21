@@ -28,6 +28,9 @@ CREATE TABLE posts (
   title TEXT
 );
 
+CREATE SEQUENCE seq_existing START WITH 5 OWNED BY posts.id;
+CREATE SEQUENCE seq_missing START WITH 10 OWNED BY posts.id;
+
 CREATE TABLE comments (
   id SERIAL PRIMARY KEY,
   post_id INTEGER REFERENCES posts(id)
