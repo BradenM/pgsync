@@ -161,12 +161,12 @@ module PgSync
         copy(copy_to_command, dest_table: table, dest_fields: fields)
       end
 
-      # create missing sequences   
+      # create missing sequences
       missing_sequences = from_sequences - to_sequences
       missing_sequences.each do |seq|
         value = source.last_value(seq)
         owner = [quote_ident_full(table), quote_ident(seq.column)].join('.')
-        sql = "CREATE SEQUENCE #{quote_ident_full(seq)} START WITH #{value} OWNED BY #{owner}"
+        sql = "CREATE SEQUENCE IF NOT EXISTS #{quote_ident_full(seq)} START WITH #{value} OWNED BY #{owner}"
         puts("Creating missing sequence: #{sql}")
         destination.execute(sql)
       end
